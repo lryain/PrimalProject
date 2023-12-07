@@ -161,7 +161,7 @@ namespace PrimalEditor.GameProject
                 dirInfo.Attributes |= FileAttributes.Hidden;
                 //拷贝模板文件
                 File.Copy(template.IconFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Icon.png")));
-                File.Copy(template.IconFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Screenshot.png")));
+                File.Copy(template.ScreenshotFilePath, Path.GetFullPath(Path.Combine(dirInfo.FullName, "Screenshot.png")));
 
                 // 生成序列化文件，作为模板，现在不需要这段的代码
                 /*

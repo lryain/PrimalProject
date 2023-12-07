@@ -35,6 +35,10 @@ namespace PrimalEditor.GameProject
             if(!string.IsNullOrEmpty(projectPath) )
             {
                 dialogResult = true;
+                // 调用OpenProject.Open方法处理 项目打开逻辑 返回一个Project对象
+
+                var project = OpenProject.Open(new ProjectData() { ProjectName = vm.ProjectName, ProjectPath = projectPath });
+
             }
             win.DialogResult = dialogResult;
             win.Close();
