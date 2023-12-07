@@ -106,7 +106,7 @@ namespace PrimalEditor.GameProject
             //每次操作后都要重新保存改动到 ProjectData.xml 文件
             WriteProjectData();
 
-            return null;
+            return Project.Load(project.FullPath);
         }
 
         // 静态构造函数

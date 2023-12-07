@@ -5,6 +5,11 @@
     <StackPanel Background="White">
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
             <ListBox x:Name="projectListBox" Width="195" Height="250" ItemsSource="{Binding Projects}" SelectedIndex="0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnListBoxItem_Mouse_DoubleClick" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <!--  显示名字和图标  -->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -23,7 +28,7 @@
         </StackPanel>
 
         <StackPanel Margin="0,30,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
-            <Button Width="96" Content="打开" IsCancel="True" />
+            <Button Width="96" Click="OnOpen_Button_Click" Content="打开" IsCancel="True" />
             <Button Width="96" Margin="30,0,0,0" Content="取消" IsCancel="True" />
         </StackPanel>
     </StackPanel>

@@ -38,7 +38,8 @@ namespace PrimalEditor.GameProject
                 // 调用OpenProject.Open方法处理 项目打开逻辑 返回一个Project对象
 
                 var project = OpenProject.Open(new ProjectData() { ProjectName = vm.ProjectName, ProjectPath = projectPath });
-
+                //设置 DataContext 传递到主窗体，然后主窗体就可以使用这个数据上下文
+                win.DataContext = project;
             }
             win.DialogResult = dialogResult;
             win.Close();

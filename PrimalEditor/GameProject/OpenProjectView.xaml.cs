@@ -24,5 +24,31 @@ namespace PrimalEditor.GameProject
         {
             InitializeComponent();
         }
+
+        private void OnOpen_Button_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSelectedProject();
+        }
+
+        // 接下来我们需要把打开的项目传递到主创口来继续
+        private void OpenSelectedProject()
+        {
+            //用选定的模板来构造一个新项目
+            var project = OpenProject.Open(projectListBox.SelectedItem as ProjectData);
+            bool dialogResult = false;
+            var win = Window.GetWindow(this);
+            if (project != null)
+            {
+                dialogResult = true;
+            }
+            win.DialogResult = dialogResult;
+            win.Close();
+            win.DataContext = project;
+        }
+
+        private void OnListBoxItem_Mouse_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            OpenSelectedProject();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using PrimalEditor.GameProject;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,13 @@ namespace PrimalEditor
         {
             InitializeComponent();
             Loaded += OnMainWindowLoaded;
+            Closing += OnMainWindowClosing;
+        }
+
+        private void OnMainWindowClosing(object sender, CancelEventArgs e)
+        {
+            Closing -= OnMainWindowClosing;
+            Project.Current?.Unload();
         }
 
         private void OnMainWindowLoaded(object sender, RoutedEventArgs e)
@@ -37,13 +45,16 @@ namespace PrimalEditor
         {
             var projectBrowser = new ProjectBrowserDialog();
             projectBrowser.ShowDialog();
-            if(projectBrowser.ShowDialog() == false)
+            //if(projectBrowser.ShowDialog() == false || projectBrowser.DataContext == null)
+            if(projectBrowser.Visibility.Equals(false) || projectBrowser.DataContext == null)
             {
-                Application.Current.Shutdown();
+                    Application.Current.Shutdown();
             }
             else
             {
-
+                // 如果已经打开了项目，那么需要先卸载当前项目，然后在加载数据
+                Project.Current?.Unload();
+                DataContext = projectBrowser.DataContext;
             }
         }
     }
