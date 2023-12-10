@@ -21,7 +21,7 @@ namespace PrimalEditor.GameProject
         public string Name { get; private set; } = "New Project";
         [DataMember]
         public string Path { get; private set; }
-        public string FullPath => $"{Path}{Name}{Extension}";
+        public string FullPath => $@"{Path}{Name}\{Name}{Extension}";
 
         // 场景
         [DataMember(Name = "Scenes")]
@@ -50,20 +50,22 @@ namespace PrimalEditor.GameProject
         public static UndoRedo UndoRedo {  get; } = new UndoRedo();
 
         // 然后添加两个相应的ICommand的方法
-        public ICommand AddScene {  get; private set; }
-        public ICommand RemoveScene { get; private set; }
+        public ICommand AddSceneCommand {  get; private set; }
+        public ICommand RemoveSceneCommand { get; private set; }
 
-        public ICommand Undo {  get; private set; }
-        public ICommand Redo {  get; private set; }
+        public ICommand UndoCommand {  get; private set; }
+        public ICommand RedoCommand {  get; private set; }
+        public ICommand SaveCommand {  get; private set; }
 
         // 添加场景 将这两个方法改成私有的，然后重命名成内部的方法
-        private void AddSceneInternal(string sceneName)
+        // 现在有不需要加Internal了
+        private void AddScene(string sceneName)
         {
             Debug.Assert(!string.IsNullOrEmpty(sceneName.Trim()));
             _scenes.Add(new Scene(this, sceneName));
         }
 
-        private void RemoveSceneInternal(Scene scene)
+        private void RemoveScene(Scene scene)
         {
             Debug.Assert(_scenes.Contains(scene));
             _scenes.Remove(scene);
@@ -99,32 +101,33 @@ namespace PrimalEditor.GameProject
             }
             ActiveScene  = Scenes.FirstOrDefault(x => x.IsActive);
             // 在详细序列化后 生成一个添加场景命令？
-            AddScene = new RelayCommand<object>(x =>
+            AddSceneCommand = new RelayCommand<object>(x =>
             {
-                AddSceneInternal($"New Scene {_scenes.Count}");
+                AddScene($"New Scene {_scenes.Count}");
                 var newScene = _scenes.Last(); // 记住场景和索引
                 var sceneIndex = _scenes.Count - 1;
 
                 UndoRedo.Add(new UndoRedoAction(
-                    () => RemoveSceneInternal(newScene),
+                    () => RemoveScene(newScene),
                     () => _scenes.Insert(sceneIndex, newScene),
                     $"Add {newScene.Name}"));
             });
 
-            RemoveScene = new RelayCommand<Scene>(x =>
+            RemoveSceneCommand = new RelayCommand<Scene>(x =>
             {
                 var sceneIndex = _scenes.IndexOf(x);
-                RemoveSceneInternal(x);
+                RemoveScene(x);
 
                 UndoRedo.Add(new UndoRedoAction(
                     () => _scenes.Insert(sceneIndex, x),
-                    () => RemoveSceneInternal(x),
+                    () => RemoveScene(x),
                     $"Remove {x.Name}"));
             }, x => !x.IsActive);
 
             // 每当我们点击重做和撤销
-            Undo = new RelayCommand<object>(x => UndoRedo.Undo());
-            Redo = new RelayCommand<object>(x => UndoRedo.Redo());
+            UndoCommand = new RelayCommand<object>(x => UndoRedo.Undo());
+            RedoCommand = new RelayCommand<object>(x => UndoRedo.Redo());
+            SaveCommand = new RelayCommand<object>(x => Save(this));
         }
 
         // 此时构造函数已经不再需要，我们需要用其他办法来构造Project，在反序列化后我们需要一个方法来处理后续的场景初始化逻辑
