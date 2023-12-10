@@ -23,6 +23,13 @@ namespace PrimalEditor.GameProject
         public OpenProjectView()
         {
             InitializeComponent();
+
+            // 添加默认聚焦到一个项目
+            Loaded += (s, e) =>
+            {
+                var item = projectListBox.ItemContainerGenerator.ContainerFromIndex(projectListBox.SelectedIndex) as ListBoxItem;
+                item?.Focus();
+            };
         }
 
         private void OnOpen_Button_Click(object sender, RoutedEventArgs e)

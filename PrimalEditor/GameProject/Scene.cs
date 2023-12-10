@@ -34,7 +34,7 @@ namespace PrimalEditor.GameProject
         private bool _isActive;
 
         /***
-         * 这里有个坑点 必须按照字母顺序来放，不然提取不到值，改成：
+         * 这里有个坑点 必须按照字母顺序来放，不然提取不到bool字段的值，改成：
          * <Scene z:Id="i2">
          *    <IsActive>true</IsActive>
          *    <Project z:Ref="i1"/>
